@@ -1,5 +1,9 @@
 # vueorg-ts
 
+This organizer app is Vue Typescript variant of Angular app, which I saw on  
+https://www.youtube.com/watch?v=NaZwVUHnmfE
+
+
 ## Project setup
 ```
 npm install
