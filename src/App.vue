@@ -1,5 +1,7 @@
 <template>
+ 
   <div id="app" class="container">
+
     <Selector/>
     <Calendar/>
     <Organizer/>
@@ -12,8 +14,9 @@ import { DateService } from './shared/date.service';
 import Selector from './components/Selector.vue';
 import { Moment } from 'moment';
 import Calendar from './components/Calendar.vue';
-import { TaskService } from './shared/tasks.service.local';
+import { TaskService } from './shared/tasks.service.onoff';
 import Organizer from './components/Organizer.vue';
+export {TaskService};
 
 Vue.filter('month', function (moment: Moment) {
   return moment.format('MMMM YYYY')
@@ -35,7 +38,18 @@ Vue.filter('date', function (moment: Moment) {
 export default class App extends Vue {
     @Provide('dateService') public dataService: DateService=new DateService();
     @Provide('taskService') public taskService: TaskService=new TaskService();
+    
+    created(){
+        if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('./service-worker.js')
+                .then((reg) => {
+                console.log('Service worker registered.', reg);
+                });
+        });
 
+    }
+    }
 }
 </script>
 

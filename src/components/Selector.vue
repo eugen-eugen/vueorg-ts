@@ -8,7 +8,7 @@
 </template>
 <script lang="ts">
 
-import { Component, Inject, Vue, Prop } from 'vue-property-decorator'
+import { Component, Inject, Vue } from 'vue-property-decorator'
 import { DateService } from '../shared/date.service';
 import { Moment} from 'moment';
 import moment from 'moment'

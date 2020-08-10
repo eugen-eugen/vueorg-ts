@@ -13,6 +13,8 @@ export interface Task {
     id: string;
     title: string;
     date: string;
+    version: number;
+    online: boolean
 }
 
 export interface ResponseMap {

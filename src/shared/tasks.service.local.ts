@@ -9,8 +9,9 @@ import {v4 as uuid} from 'uuid';
 export class TaskService{
   
   
-  create(task: Task): Observable<Task>{
-    task.id = uuid();
+  static create(task: Task): Observable<Task>{
+    console.log('creating local');
+    task.id = task.id ? task.id:uuid();
     let tasksAday: ResponseMap = Lockr.get(task.date);
      
     tasksAday = tasksAday?tasksAday: {};
@@ -20,16 +21,22 @@ export class TaskService{
     return of (task);
   }
 
-  load(date: moment.Moment): Observable<Task[]>{
+  static load(date: moment.Moment): Observable<Task>{
     let tasksAday: ResponseMap = Lockr.get(date.format('DD-MM-YYYY'));
     tasksAday = tasksAday?tasksAday: {};
-    return of (Object.values(tasksAday));
+    return new Observable<Task>(subscriber => {
+      Object.entries(tasksAday).forEach(([key, task]) => {
+        subscriber.next(task)
+      })
+    })
   }
 
-  remove(task: Task): Observable<Task> {
+  static remove(task: Task): Observable<Task> {
     const tasksAday: ResponseMap = Lockr.get(task.date);
-    delete tasksAday[task.id];
-    Lockr.set(task.date, tasksAday);
+    if (tasksAday) {
+      delete tasksAday[task.id];
+       Lockr.set(task.date, tasksAday);
+    }
     return of (task);
   }
 }

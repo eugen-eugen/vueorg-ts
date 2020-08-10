@@ -35,8 +35,8 @@
 import { Component, Inject, Vue, Watch } from "vue-property-decorator";
 import { DateService } from "../shared/date.service";
 import { switchMap }  from 'rxjs/operators'
-import { TaskService } from '../shared/tasks.service.local';
 import { Task } from '../shared/Interfaces';
+import { TaskService } from '@/App.vue';
 
 @Component
 export default class Organizer extends Vue {
@@ -52,9 +52,9 @@ export default class Organizer extends Vue {
 
   created() {
     this.dateService.date.pipe(
-      switchMap( value => this.taskService.load(value))
-    ).subscribe(_tasks => {console.log('subscriptor'); 
-        this.tasks = _tasks;
+      switchMap( value => {this.tasks=[]; return this.taskService.load(value)})
+    ).subscribe(_task => {console.log('subscriptor'); 
+        this.tasks.push (_task);
     });
     this.$on("offline", ()=>{
         console.log('offline')
@@ -67,7 +67,9 @@ export default class Organizer extends Vue {
     const task: Task ={
       title: this.title,
       date: this.dateService.date.value.format('DD-MM-YYYY'),
-      id: ''
+      id: '',
+      online: false,
+      version: 0
     };
 
     this.taskService.create(task).subscribe(() => {
